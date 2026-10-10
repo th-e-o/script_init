@@ -1,0 +1,22 @@
+#!/bin/bash
+curl -fsSL https://claude.ai/install.sh | bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+echo '{"hasCompletedOnboarding": true}' > ~/.claude.json
+
+code-server --install-extension anthropic.claude-code
+
+# Thème Abyss
+SETTINGS="$HOME/.local/share/code-server/User/settings.json"
+mkdir -p "$(dirname "$SETTINGS")"
+python3 - "$SETTINGS" <<'EOF'
+import json, sys, os
+path = sys.argv[1]
+data = {}
+if os.path.exists(path):
+    try:
+        data = json.load(open(path))
+    except Exception:
+        pass
+data["workbench.colorTheme"] = "Abyss"
+json.dump(data, open(path, "w"), indent=2)
+EOF
